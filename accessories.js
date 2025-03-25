@@ -456,30 +456,18 @@ function changePage(direction) {
 }
 
 function addToCart(accessory) {
-    // Отримуємо поточний кошик або створюємо новий
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    
-    // Перевіряємо, чи товар вже є в кошику
-    const existingItem = cart.find(item => item.name === accessory.name);
-    
-    if (existingItem) {
-        existingItem.quantity = (existingItem.quantity || 1) + 1;
-    } else {
-        cart.push({
-            name: accessory.name,
-            price: accessory.price,
-            type: accessory.type,
-            brand: accessory.brand,
-            image: accessory.image,
-            quantity: 1,
-            itemType: 'accessory'
-        });
+    // Перевіряємо, чи користувач авторизований
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    if (!isAuthenticated) {
+        alert('Будь ласка, увійдіть в систему для додавання товарів до кошика');
+        window.location.href = 'login.html';
+        return;
     }
-    
-    // Зберігаємо оновлений кошик
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart.push(accessory);
     localStorage.setItem('cart', JSON.stringify(cart));
-    
-    // Показуємо повідомлення про успішне додавання
+    updateCartCounter();
     alert('Товар додано до кошика!');
 }
 
